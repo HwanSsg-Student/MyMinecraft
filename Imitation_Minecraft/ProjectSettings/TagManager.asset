@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Aim
+  - TerrainGenerator
+  - GameItem
+  - ItemSlot
+  - Panel_GameMenu
+  - Btn_SaveAndQuitToTitle
+  - Btn_BackToGame
+  - Panel_CraftingTable
+  - Panel_Inventory
+  - Panel_SinglePlay
+  - ScrView_Single
+  - Btn_Play
+  - Btn_Create
+  - Btn_CancelAtSinglePlay
+  - Panel_MultiPlay
+  - ScrView_Multi
+  - Panel_CreateWorld
+  - Btn_WorldType
+  - Text_WorldType
+  - Text_InputTitle
+  - Btn_CreateAtCreateWorld
+  - Btn_CancelAtCreateWorld
+  - Panel_MainTitle
+  - Btn_SinglePlay
+  - Btn_MultiPlay
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "516514355239",
+    "firebase_url": "https://imitation-minecraft-default-rtdb.firebaseio.com",
+    "project_id": "imitation-minecraft",
+    "storage_bucket": "imitation-minecraft.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516514355239:android:624222d31ac4abb315d602",
+        "android_client_info": {
+          "package_name": "com.LHS.ImitationMineCraft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAidwCfTO54P7ut0cFLaexrckuU0SnxZEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
