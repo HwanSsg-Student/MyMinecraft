@@ -20,3 +20,11 @@
 *.user
 *.suo
 *.tmp
+
+# Firebase 네이티브 바이너리만 무시
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.so
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.bundle
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.dll
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.a
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.aar
+Imitation_Minecraft/Assets/Firebase/Plugins/**/*.framework
