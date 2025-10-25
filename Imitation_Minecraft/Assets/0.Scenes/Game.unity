@@ -571,12 +571,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colliderIndex: 0
   thresholdInfos:
-  - visibleDstThreshold: 32
+  - visibleDstThreshold: 16
   - visibleDstThreshold: 64
   heightMapSettings: {fileID: 11400000, guid: 3c09674c6310c984d882dd7cf80b5505, type: 2}
   m_blockSettings: {fileID: 11400000, guid: 4a32be189129b3640ae7135e5b56f003, type: 2}
   _viewer: {fileID: 0}
-  _mapMaterial: {fileID: 0}
+  _mapMaterial: {fileID: 2100000, guid: 9487292c4bc53884f812a6c8d90cf3a4, type: 2}
 --- !u!4 &1159475690
 Transform:
   m_ObjectHideFlags: 0

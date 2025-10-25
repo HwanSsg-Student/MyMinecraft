@@ -108,20 +108,17 @@ public static class BlockDataGenerator
 
 public class BlockData
 {
-    public int width;
-    public int height;
-    BlockSettings m_blockSettings;
-    public BlockType[,,] m_blockTypes;    //어떤 블럭인지
-    //public BlockType[][][] m_bringBlockTypeFromJson;
-    
-    
+    readonly int _width;
+    readonly int _height;
+    BlockSettings _blockSettings;
+    public BlockType[,,] _blockTypes;    //어떤 블럭인지
 
     public BlockData(BlockSettings blockSettings)
     {
-        m_blockSettings = blockSettings;
-        width = blockSettings.width;
-        height = blockSettings.MaxHeight;
-        m_blockTypes = new BlockType[width, height + 7, width];
+        _blockSettings = blockSettings;
+        _width = blockSettings.width;
+        _height = blockSettings.MaxHeight;
+        _blockTypes = new BlockType[_width, _height + 7, _width];
     }
 
 
@@ -129,15 +126,15 @@ public class BlockData
     {        
         if(blockType == BlockType.None)
         {
-            for (int i = 0; i < m_blockSettings.blockDatas.Length; i++)
+            for (int i = 0; i < _blockSettings.blockDatas.Length; i++)
             {
-                if (y < m_blockSettings.blockDatas[i].m_startHeight)
+                if (y < _blockSettings.blockDatas[i].m_startHeight)
                 {
                     break;
                 }
                 else
                 {
-                    m_blockTypes[x, y, z] = m_blockSettings.blockDatas[i].m_blockType;
+                    _blockTypes[x, y, z] = _blockSettings.blockDatas[i].m_blockType;
                 }
             }
         }
@@ -145,7 +142,7 @@ public class BlockData
         {
             try
             {
-                m_blockTypes[x, y, z] = blockType;
+                _blockTypes[x, y, z] = blockType;
             }
             catch (System.Exception e)
             {

@@ -1,13 +1,5 @@
 using UnityEngine;
-/// <summary>
-/// vertices(vertex)    : 꼭짓점 = Width * Height, 정점은 255^2(65025)개까지의 제한이 있음
-/// 삼각형 배열의 크기  : (Width - 1)(Height - 1) * 6
-/// heightMultiplier    : 높이 상수(?)
-/// levelOfDetail(LOD)  : 세부 수준, (width - 1)의 인수를 갖음
-/// LOD에 따른 꼭짓점 수: (width - 1)/LOD + 1
-/// heightCurve         : 높이에 따른 가파름 정도(?)
-/// meshSize = bordered size - 2;
-/// </summary>
+
 public static class MeshGenerator
 {
     public static BlockMeshData GenerateTerrainMeshAsBlock(BlockData blockData, BlockSettings blockSettings)
@@ -15,8 +7,8 @@ public static class MeshGenerator
         int width = blockSettings.width;
         int maxHeight = blockSettings.MaxHeight;
 
-        
-        BlockType[,,] blockTypes = blockData.m_blockTypes;
+        BlockType[,,] blockTypes = blockData._blockTypes;
+
         BlockMeshData blockMesh = new BlockMeshData(width, maxHeight, blockSettings);
 
         int boundaryIndex = 0;        
@@ -133,31 +125,31 @@ public static class MeshGenerator
 [System.Serializable]
 public class BlockMeshData
 {
-    BlockSettings m_blockSettings;
+    BlockSettings _blockSettings;
 
-    Vector3[] vertices; //꼭짓점
-    int[] triangles;    //삼각형을 구성하는 배열
-    Vector2[] uvs;      //UV 배열
+    Vector3[] _vertices; //꼭짓점
+    int[] _triangles;    //삼각형을 구성하는 배열
+    Vector2[] _uvs;      //UV 배열
 
-    int vertexIndex;
-    int triangleIndex;
-    int uvIndex;
+    int _vertexIndex;
+    int _triangleIndex;
+    int _uvIndex;
 
     public BlockMeshData(int width, int maxHeight, BlockSettings blockSettings)
     {
-        vertices = new Vector3[width * width * maxHeight * 24];
-        triangles = new int[width * width * maxHeight * 36];
-        uvs = new Vector2[vertices.Length];
-        vertexIndex = 0;
-        triangleIndex = 0;
-        uvIndex = 0;
-        m_blockSettings = blockSettings;
+        _vertices = new Vector3[width * width * maxHeight * 24];
+        _triangles = new int[width * width * maxHeight * 36];
+        _uvs = new Vector2[_vertices.Length];
+        _vertexIndex = 0;
+        _triangleIndex = 0;
+        _uvIndex = 0;
+        _blockSettings = blockSettings;
     }
 
 
     public void AddVertex(Vector3 vertexPos, DirTypeData dir, BlockType blockType, bool isBoundary = false)
     {
-        var data = m_blockSettings.blockDatas;
+        var data = _blockSettings.blockDatas;
         int typeIndex = 0;
         for (int i = 0; i < data.Length; i++)
         {
@@ -173,70 +165,70 @@ public class BlockMeshData
             switch (dir)
             {
                 case DirTypeData.Forward:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 1);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 1);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 2);
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 1);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Back:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 0);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 0);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 2);
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 1);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Right:
-                    vertices[vertexIndex] = vertexPos + new Vector3(1, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(1, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(1, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(1, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 2);
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 1);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Left:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(0, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(0, 0, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(0, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(0, 0, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 2);
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 1);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Up:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 1, 0);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 1, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 1, 0);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 1, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 2);
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 1);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_top[0], data[typeIndex].m_top[1], data[typeIndex].m_top[2], data[typeIndex].m_top[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Down:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 0, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 0, 1);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 0, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 0, 1);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 2);
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 1);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_bottom[0], data[typeIndex].m_bottom[1], data[typeIndex].m_bottom[2], data[typeIndex].m_bottom[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
 
             }
@@ -246,46 +238,46 @@ public class BlockMeshData
             switch (dir)
             {
                 case DirTypeData.Forward:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 1);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 1);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 1);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 2);
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 1);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Back:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0, 1, 0);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0, 1, 0);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 0);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
 
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 2);
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 1);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Right:
-                    vertices[vertexIndex] = vertexPos + new Vector3(1, 1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(1, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 2);
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 1);
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(1, 1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(1, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(1, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(1, 0, 0);     //오른쪽 아래
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
                 case DirTypeData.Left:
-                    vertices[vertexIndex] = vertexPos + new Vector3(0 ,1, 1);         //왼쪽 위
-                    vertices[vertexIndex + 1] = vertexPos + new Vector3(0, 1, 0);      //오른쪽 위
-                    vertices[vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
-                    vertices[vertexIndex + 3] = vertexPos + new Vector3(0, 0, 0);     //오른쪽 아래
-                    AddTriangle(vertexIndex + 3, vertexIndex, vertexIndex + 2);
-                    AddTriangle(vertexIndex, vertexIndex + 3, vertexIndex + 1);
+                    _vertices[_vertexIndex] = vertexPos + new Vector3(0 ,1, 1);         //왼쪽 위
+                    _vertices[_vertexIndex + 1] = vertexPos + new Vector3(0, 1, 0);      //오른쪽 위
+                    _vertices[_vertexIndex + 2] = vertexPos + new Vector3(0, 0, 1);    //왼쪽 아래
+                    _vertices[_vertexIndex + 3] = vertexPos + new Vector3(0, 0, 0);     //오른쪽 아래
+                    AddTriangle(_vertexIndex + 3, _vertexIndex, _vertexIndex + 2);
+                    AddTriangle(_vertexIndex, _vertexIndex + 3, _vertexIndex + 1);
                     AddUV(data[typeIndex].m_side[0], data[typeIndex].m_side[1], data[typeIndex].m_side[2], data[typeIndex].m_side[3]);
-                    vertexIndex += 4;
+                    _vertexIndex += 4;
                     break;
             }
         }
@@ -293,26 +285,26 @@ public class BlockMeshData
 
     public void AddTriangle(int a, int b, int c)
     {
-        triangles[triangleIndex] = a;
-        triangles[triangleIndex + 1] = b;
-        triangles[triangleIndex + 2] = c;
-        triangleIndex += 3;
+        _triangles[_triangleIndex] = a;
+        _triangles[_triangleIndex + 1] = b;
+        _triangles[_triangleIndex + 2] = c;
+        _triangleIndex += 3;
     }
     public void AddUV(Vector2 pos1, Vector2 pos2, Vector2 pos3, Vector2 pos4)
     {
-        uvs[uvIndex] = pos1;
-        uvs[uvIndex + 1] = pos2;
-        uvs[uvIndex + 2] = pos3;
-        uvs[uvIndex + 3] = pos4;
-        uvIndex += 4;
+        _uvs[_uvIndex] = pos1;
+        _uvs[_uvIndex + 1] = pos2;
+        _uvs[_uvIndex + 2] = pos3;
+        _uvs[_uvIndex + 3] = pos4;
+        _uvIndex += 4;
     }
     
     public Mesh CreateMesh()
     {
         Mesh mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uvs;
+        mesh.vertices = _vertices;
+        mesh.triangles = _triangles;
+        mesh.uv = _uvs;
 
         mesh.RecalculateNormals();
         

@@ -90,7 +90,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
             m_buttons[(int)ButtonType.BtnSaveAndQuitToTitle].onClick.AddListener(OnSaveAndQuitToTitle);
             m_panels[(int)PanelType.CraftingTable].gameObject.SetActive(false);
 
-            DBManager.Instance.Load(_title);
+            //DBManager.Instance.Load(_title);
             var players = GameObject.FindGameObjectsWithTag("Player");
             NetworkManager.Instance.InitPlayers(players);
 
@@ -187,8 +187,8 @@ public class GameManager : SingletonDontDestroy<GameManager>
 
                 foreach (Vector2 coord in _coordList)
                 {
-                    TerrainChunk tc = TerrainGenerator.m_changedTerrainChunkDic[coord];   
-                    string str = coord.x.ToString() + coord.y.ToString();
+                    TerrainChunk tc = TerrainGenerator.m_changedTerrainChunkDic[coord];
+                    string str = string.Format($"{coord.x}_{coord.y}");
                     var blockData = tc.BlockData;
                     var blockDataJson = JsonConvert.SerializeObject(blockData);
                     snapShot.Child("Chunks").Child(str).Reference.SetRawJsonValueAsync(blockDataJson);
@@ -206,10 +206,11 @@ public class GameManager : SingletonDontDestroy<GameManager>
     {
         Debug.Log("»ý¼º");
         _heightMapSettings.noiseSettings.seed = UnityEngine.Random.Range(0, 100000);
+
         var json_heightMapSettings = JsonUtility.ToJson(_heightMapSettings);
-        var json_blockSettings = JsonUtility.ToJson(_blockSettings);
+
         _title = m_texts[(int)TextType.InputTitle].text;
-        DBManager.Instance.Reference.Child("Minecraft").Child(_title).SetValueAsync("");
+        
         DBManager.Instance.Reference.Child("Minecraft").Child(_title).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted) return;
@@ -217,7 +218,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
             {
                 var snapShot = task.Result;
                 snapShot.Child("heightSettings").Reference.SetRawJsonValueAsync(json_heightMapSettings);
-                snapShot.Child("blockSettings").Reference.SetRawJsonValueAsync(json_blockSettings);
+
                 snapShot.Child("date").Reference.SetValueAsync(DateTime.Now.ToString());
             }
         });
@@ -250,7 +251,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
                             }
                         }
                     }
-                        _isSuccess = true;
+                    _isSuccess = true;
                 }
             });
         }

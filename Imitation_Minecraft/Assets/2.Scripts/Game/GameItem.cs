@@ -13,30 +13,29 @@ public class GameItem : MonoBehaviour
     int m_myIndex;
 
     [SerializeField]
-    BlockSettings m_blockSettings;
+    BlockSettings _blockSettings;
     [SerializeField]
-    RawImage m_image;
+    RawImage _image;
     [SerializeField]
-    Text m_countText;
+    Text _countText;
     [SerializeField]
-    ItemSlot m_itemSlot;
+    ItemSlot _itemSlot;
 
 
-    StringBuilder m_sb;
-    BlockType m_blockType;
+    StringBuilder _sb;
+    BlockType _blockType;
     
 
-    public RectTransform m_rectTransform;
-    bool m_isDragging;
-    bool m_isSelect;
-    Vector3 m_offset;
+    public RectTransform _rectTransform;
+    bool _isDragging;
+    Vector3 _offset;
 
 
     #region [Property]
     public BlockType Type
     {
-        get { return m_blockType; }
-        set { m_blockType = value; }
+        get { return _blockType; }
+        set { _blockType = value; }
     }
     public int Count
     {
@@ -51,12 +50,12 @@ public class GameItem : MonoBehaviour
 
     public bool IsDragging
     {
-        get { return m_isDragging; }
-        set { m_isDragging = value; }
+        get { return _isDragging; }
+        set { _isDragging = value; }
     }
     public ItemSlot CurSlot
     {
-        get { return m_itemSlot; }
+        get { return _itemSlot; }
     }
     #endregion
 
@@ -65,26 +64,26 @@ public class GameItem : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Input.mousePosition;
-            if (RectTransformUtility.RectangleContainsScreenPoint(m_rectTransform, mousePos, null))
+            if (RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, mousePos, null))
             {
                 if (Inventory.Instance.IsHold)
                 {
                     Inventory.Instance.IsHold = false;
                     return;
                 }
-                m_isDragging = true;
-                m_offset = m_rectTransform.position - mousePos;
+                _isDragging = true;
+                _offset = _rectTransform.position - mousePos;
             }
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            m_isDragging = false;
+            _isDragging = false;
         }
 
-        if(m_isDragging)
+        if(_isDragging)
         {
             Vector3 curMousePos = Input.mousePosition;
-            m_rectTransform.position = curMousePos + m_offset;
+            _rectTransform.position = curMousePos + _offset;
         }
     }
     public void OnHoldHalf()
@@ -101,14 +100,14 @@ public class GameItem : MonoBehaviour
         {
             Vector3 mousePos = Input.mousePosition;
             
-            if (RectTransformUtility.RectangleContainsScreenPoint(m_rectTransform, mousePos))
+            if (RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, mousePos))
             {
                 if (Inventory.Instance.IsHold)
                 {
                     Inventory.Instance.IsHold = false;
                     return;
                 }
-                Inventory.Instance.BringItemHalf(this, m_itemSlot);
+                Inventory.Instance.BringItemHalf(this, _itemSlot);
 
                 if(m_count != 1)
                 {
@@ -116,47 +115,47 @@ public class GameItem : MonoBehaviour
                 }
                 else if(m_count == 1)
                 {
-                    Inventory.Instance.HoldingItem = m_itemSlot.m_gameItem;
-                    m_itemSlot.InitSlot();
-                    m_itemSlot = null;
+                    Inventory.Instance.HoldingItem = _itemSlot.m_gameItem;
+                    _itemSlot.InitSlot();
+                    _itemSlot = null;
                     Inventory.Instance.IsHold = true;
 
                     //Inventory.Instance.ReturnToPool(this);
                     return;
                 }
 
-                m_sb.AppendFormat("{0}", m_count);
-                m_countText.text = m_sb.ToString();
-                m_sb.Clear();
+                _sb.AppendFormat("{0}", m_count);
+                _countText.text = _sb.ToString();
+                _sb.Clear();
             }
         }
     }
 
     public void InitBlockItem(ItemData item, ItemSlot slot)
     {
-        m_blockType = item.blockType;
-        m_itemSlot = slot;
+        _blockType = item.blockType;
+        _itemSlot = slot;
         m_myIndex = item.index;
         var rawImage = GetComponent<RawImage>();
 
-        if((int)m_blockType >= 9)
+        if((int)_blockType >= 9)
             rawImage.texture = Resources.Load<Texture>("Image/ItemIcons");
         else 
             rawImage.texture = Resources.Load<Texture>("Image/BlockIcons");
 
-        var datas = m_blockSettings.blockDatas;
+        var datas = _blockSettings.blockDatas;
 
         for (int i = 0; i < datas.Length; i++)
         {
-            if (datas[i].m_blockType == m_blockType)
+            if (datas[i].m_blockType == _blockType)
             {       
-                m_image.uvRect = datas[i].m_rect;
+                _image.uvRect = datas[i].m_rect;
             }
         }
         m_count = item.count;
-        m_sb.AppendFormat("{0}", item.count);
-        m_countText.text = m_sb.ToString();
-        m_sb.Clear();
+        _sb.AppendFormat("{0}", item.count);
+        _countText.text = _sb.ToString();
+        _sb.Clear();
 
     }
     
@@ -165,9 +164,9 @@ public class GameItem : MonoBehaviour
         if(m_count < MaxCount)
         {
             m_count += count;
-            m_sb.AppendFormat("{0}", m_count);
-            m_countText.text = m_sb.ToString();
-            m_sb.Clear();
+            _sb.AppendFormat("{0}", m_count);
+            _countText.text = _sb.ToString();
+            _sb.Clear();
             return true;
         }
         else
@@ -181,27 +180,27 @@ public class GameItem : MonoBehaviour
         if(m_count == 0)
         {
             m_count = 1;
-            m_blockType = BlockType.None;
-            m_itemSlot.InitSlot();
-            m_itemSlot = null;
+            _blockType = BlockType.None;
+            _itemSlot.InitSlot();
+            _itemSlot = null;
             Inventory.Instance.ReturnToPool(this);
             return;
         }
-        m_sb.AppendFormat("{0}", m_count);
-        m_countText.text = m_sb.ToString();
-        m_sb.Clear();
+        _sb.AppendFormat("{0}", m_count);
+        _countText.text = _sb.ToString();
+        _sb.Clear();
     }
     public void ChangeSlot(ItemSlot slot)
     {
-        m_itemSlot = slot;
-        transform.parent = m_itemSlot.transform;
-        m_rectTransform.anchoredPosition = new Vector2(24f, -24f);
+        _itemSlot = slot;
+        transform.parent = _itemSlot.transform;
+        _rectTransform.anchoredPosition = new Vector2(24f, -24f);
     }
     void Awake()
     {
-        m_sb = new StringBuilder();
-        m_blockType = BlockType.None;
-        m_rectTransform = GetComponent<RectTransform>();
+        _sb = new StringBuilder();
+        _blockType = BlockType.None;
+        _rectTransform = GetComponent<RectTransform>();
         m_count = 1;
     }
     void Update()

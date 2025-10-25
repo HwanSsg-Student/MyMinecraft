@@ -21,9 +21,7 @@ public class LoadSceneManager : SingletonDontDestroy<LoadSceneManager>
             GameManager.Instance.InitObject(sceneNum);
             m_sceneType = sceneNum;
         };
-        //asyncOperation.completed -= (temp) => { GameManager.Instance.InitObject(sceneNum); };
-
-        
+                
     }
     public void OnPlay()
     {
@@ -31,6 +29,7 @@ public class LoadSceneManager : SingletonDontDestroy<LoadSceneManager>
         if (btn != null)
         {
             GameManager.Instance.CurTitle = btn.Title.ToString();
+            DBManager.Instance.Load(btn.Title);
         }
         NetworkManager.Instance.Connect();   
     }

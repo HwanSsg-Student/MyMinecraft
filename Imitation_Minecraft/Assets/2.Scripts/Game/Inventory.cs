@@ -275,7 +275,7 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 
         m_holdingItem = m_gameItemPool.Get();
         m_holdingItem.gameObject.transform.parent = this.transform;
-        m_holdingItem.m_rectTransform.transform.position = Input.mousePosition;
+        m_holdingItem._rectTransform.transform.position = Input.mousePosition;
         m_holdingItem.gameObject.SetActive(true);
 
 
@@ -386,7 +386,7 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
                 Craft();
                 if (m_isHold)
                 {
-                    m_holdingItem.m_rectTransform.position = Input.mousePosition;
+                    m_holdingItem._rectTransform.position = Input.mousePosition;
                 }
             }
             if (GameManager.Instance.m_panels[(int)PanelType.CraftingTable].activeSelf)
@@ -394,7 +394,7 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
                 CraftInTable();
                 if (m_isHold)
                 {
-                    m_holdingItem.m_rectTransform.position = Input.mousePosition;
+                    m_holdingItem._rectTransform.position = Input.mousePosition;
                 }
             }
 

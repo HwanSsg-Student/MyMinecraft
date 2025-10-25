@@ -1,8 +1,14 @@
-using UnityEngine;
+using Firebase;
+using Firebase.Database;
 using Firebase.Extensions;
 using Newtonsoft.Json;
 using Photon.Pun;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEditor.Build;
+using UnityEngine;
 [System.Serializable]
 public class TerrainChunk
 {
@@ -10,8 +16,8 @@ public class TerrainChunk
     const float _colliderGenerationDistanceThreshold = 5;
     public Vector2 _coord;
 
-    Vector2 _sampleCenter;
-    Bounds _bounds;
+    public Vector2 _sampleCenter;
+    public Bounds _bounds;
     Transform _viewer;
 
     MeshRenderer _meshRenderer;
@@ -36,7 +42,7 @@ public class TerrainChunk
     
     HeightMapSettings _heightMapSettings;
     BlockSettings _blockSettings;  //블럭 셋팅
-    GameObject _chunkObject;       //Chunk
+    public GameObject _chunkObject;       //Chunk
 
     public BlockData BlockData
     {
@@ -62,9 +68,9 @@ public class TerrainChunk
         _colliderIndex = colliderIndex;
         _viewer = viewer;
 
-        _sampleCenter = _coord * _blockSettings.WorldSize / _blockSettings.scale;
-        Vector2 position = _coord * _blockSettings.WorldSize;
-        _bounds = new Bounds(position, Vector2.one * _blockSettings.WorldSize);
+        _sampleCenter = _coord * _blockSettings.ChunkSize;
+        Vector2 position = _coord * _blockSettings.ChunkSize;
+        _bounds = new Bounds(new Vector3(position.x + 8f, 0f, position.y + 8f), Vector3.one * _blockSettings.ChunkSize);
 
         _chunkObject = new GameObject("TerrainChunk");
         _meshRenderer = _chunkObject.AddComponent<MeshRenderer>();
@@ -81,11 +87,11 @@ public class TerrainChunk
         for (int i = 0; i < _thresholdInfos.Length; i++)  // 모든 Chuck를 생성하고있는 반복문
         {
             _visibleMeshes[i] = new VisibleMesh();
-            _visibleMeshes[i].updateCallback += UpdateTerrainChunk;
+            _visibleMeshes[i].UpdateCallback += UpdateTerrainChunk;
 
             if (i == colliderIndex)
             {
-                _visibleMeshes[i].updateCallback += UpdateCollisionMesh;
+                _visibleMeshes[i].UpdateCallback += UpdateCollisionMesh;
             }
         }
         _maxViewDst = _thresholdInfos[_thresholdInfos.Length - 1].visibleDstThreshold;
@@ -93,9 +99,31 @@ public class TerrainChunk
 
     void RequestBlockData()
     {
-        ThreadedDataRequester.RequestData(() =>
-            BlockDataGenerator.GenerateBlockData(_heightMap, _blockSettings, _heightMapSettings, _viewer),
-            OnBlockDataReceived);
+        DBManager.Instance.Reference
+            .Child("Minecraft").Child(GameManager.Instance.CurTitle).Child("Chunks")
+            .Child($"{_coord.x}_{_coord.y}").Reference.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                var snapShot = task.Result;
+                var node = snapShot.Child("_blockTypes");
+
+                if (!snapShot.Exists && !node.Exists)
+                {
+                    ThreadedDataRequester.RequestData(() =>
+                        BlockDataGenerator.GenerateBlockData(_heightMap, _blockSettings, _heightMapSettings, _viewer),
+                        OnBlockDataReceived);
+                }
+                else
+                {
+                    var blockTypesJson = snapShot.Child("_blockTypes").GetRawJsonValue();
+
+                    ThreadedDataRequester.RequestData(() =>
+                    {
+                        BlockData data = new BlockData(_blockSettings);
+                        data._blockTypes = JsonConvert.DeserializeObject<BlockType[,,]>(blockTypesJson);
+                        return data;
+                    }, OnBlockDataReceived);
+                }
+            });
     }
     void OnBlockDataReceived(object blockData)
     {
@@ -103,7 +131,6 @@ public class TerrainChunk
         _blockDataReceived = true;
         UpdateTerrainChunk();
     }
-
     void OnHeightMapReceived(object heightMapObject) //수신된 heightMap을 저장하는 함수
     {
         this._heightMap = (HeightMap)heightMapObject;
@@ -155,7 +182,7 @@ public class TerrainChunk
                     }
                     else if (!visibleMesh.hasRequestedMeshData)
                     {
-                        visibleMesh.RequestMeshData(_blockSettings, _coord, _blockData);
+                        visibleMesh.RequestMeshData(_blockSettings, _blockData);
                     }
                 }
             }
@@ -175,7 +202,7 @@ public class TerrainChunk
     [PunRPC]
     public void UpdateTerrainChunkByPlayer(int x = 0, int y = 0, int z = 0, BlockType blockType = BlockType.None)
     {
-        if (blockType != BlockType.None) _blockData.m_blockTypes[x, y, z] = blockType;
+        if (blockType != BlockType.None) _blockData._blockTypes[x, y, z] = blockType;
         _meshFilter.mesh = MeshGenerator.GenerateTerrainMeshAsBlock(_blockData, _blockSettings).CreateMesh();
         _meshCollider.sharedMesh = _meshFilter.mesh;
     }
@@ -191,7 +218,7 @@ public class TerrainChunk
             {
                 if (!_visibleMeshes[_colliderIndex].hasRequestedMeshData)
                 {
-                    _visibleMeshes[_colliderIndex].RequestMeshData(_blockSettings, _coord, _blockData);
+                    _visibleMeshes[_colliderIndex].RequestMeshData(_blockSettings, _blockData);
                 }
             }
 
@@ -200,6 +227,7 @@ public class TerrainChunk
             {
                 if (_visibleMeshes[_colliderIndex].hasMesh)
                 {
+                    Debug.Log("ChunkCollisionUpdate");
                     _meshCollider.sharedMesh = _visibleMeshes[_colliderIndex].mesh;
                     _hasSetCollider = true;
                 }
@@ -219,8 +247,10 @@ public class TerrainChunk
 
     public BlockType GetBlockType(int x, int y, int z)
     {
-        return _blockData.m_blockTypes[x, y, z];
+        return _blockData._blockTypes[x, y, z];
     }
+
+    
 }
 
 [System.Serializable]
@@ -229,8 +259,7 @@ public class VisibleMesh
     public Mesh mesh;
     public bool hasRequestedMeshData;
     public bool hasMesh;
-    public event System.Action updateCallback;
-
+    public event System.Action UpdateCallback;
 
     public VisibleMesh() { }
 
@@ -238,59 +267,13 @@ public class VisibleMesh
     {
         mesh = ((BlockMeshData)meshDataObject).CreateMesh();
         hasMesh = true;
-        updateCallback();
+        UpdateCallback();
     }
 
-    public void RequestMeshData(BlockSettings blockSettings, Vector2 coord, BlockData blockData)
+    public void RequestMeshData(BlockSettings blockSettings, BlockData blockData)
     {
         hasRequestedMeshData = true;
-        BlockData data = blockData;
-
-        DBManager.Instance.Reference.Child("Minecraft").Child(GameManager.Instance.CurTitle)
-            .Child("Chunks").Child(coord.x.ToString() + coord.y.ToString())
-            .Reference.GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                Debug.Log("IsFault");
-                return;
-            }
-            else if (task.IsCompleted)
-            {
-                var snapShot = task.Result;
-                if (snapShot.Value != null)
-                {
-                    var heightJson = snapShot.Child("height").GetRawJsonValue();
-                    var widthJson = snapShot.Child("width").GetRawJsonValue();
-                    var blockTypesJson = snapShot.Child("m_blockTypes").GetRawJsonValue();
-                    try
-                    {
-                        int height = JsonConvert.DeserializeObject<int>(heightJson);
-                        int width = JsonConvert.DeserializeObject<int>(widthJson);
-                        BlockType[,,] blockTypes = JsonConvert.DeserializeObject<BlockType[,,]>(blockTypesJson);
-
-                        data.height = height;
-                        data.width = width;
-                        data.m_blockTypes = blockTypes;
-                        ThreadedDataRequester.RequestData(() => MeshGenerator.GenerateTerrainMeshAsBlock(data, blockSettings), OnMeshDataReceived);
-                    }
-                    catch (System.Exception e)
-                    {
-                        Debug.Log(e.Message);
-                        if (e.InnerException != null)
-                        {
-                            Debug.Log("InnerException : " + e.InnerException.Message);
-                        }
-                        throw;
-                    }
-                }
-                else
-                {
-                    ThreadedDataRequester.RequestData(() => MeshGenerator.GenerateTerrainMeshAsBlock(data, blockSettings), OnMeshDataReceived);
-                }
-            }
-
-        });
+        ThreadedDataRequester.RequestData(() => MeshGenerator.GenerateTerrainMeshAsBlock(blockData, blockSettings), OnMeshDataReceived);
     }
     
 }

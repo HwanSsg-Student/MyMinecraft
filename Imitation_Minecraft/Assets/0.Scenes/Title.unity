@@ -774,7 +774,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1205376849266619037, guid: 3925a92000111c04589f23213f0d242c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000010218661
+      value: 0.0006805104
       objectReference: {fileID: 0}
     - target: {fileID: 1205376849311375424, guid: 3925a92000111c04589f23213f0d242c, type: 3}
       propertyPath: m_Sprite
@@ -958,9 +958,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2024292416817699399, guid: 5098a990ff67e9c4eb202eb285692684, type: 3}
+      propertyPath: _playerSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 1c843eda372a2ba46b64deb3339136d4, type: 2}
+    - target: {fileID: 2024292416817699399, guid: 5098a990ff67e9c4eb202eb285692684, type: 3}
       propertyPath: m_playerSettings
       value: 
       objectReference: {fileID: 11400000, guid: 1c843eda372a2ba46b64deb3339136d4, type: 2}
+    - target: {fileID: 2024292416817699399, guid: 5098a990ff67e9c4eb202eb285692684, type: 3}
+      propertyPath: _heightMapSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 3c09674c6310c984d882dd7cf80b5505, type: 2}
     - target: {fileID: 2024292416817699399, guid: 5098a990ff67e9c4eb202eb285692684, type: 3}
       propertyPath: m_heightMapSettings
       value: 
@@ -1573,7 +1581,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8708562647557158967, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 93.99995
+      value: 94.00067
       objectReference: {fileID: 0}
     - target: {fileID: 8708562647833931664, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
       propertyPath: m_TagString

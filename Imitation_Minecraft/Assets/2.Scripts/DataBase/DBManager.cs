@@ -10,9 +10,9 @@ public class DBManager : SingletonDontDestroy<DBManager>
     DatabaseReference _reference;
     FirebaseApp _app;
     [SerializeField]
-    HeightMapSettings m_heightMapSettings;
+    HeightMapSettings _heightMapSettings;
     [SerializeField]
-    PlayerSettings m_playerSettings;
+    PlayerSettings _playerSettings;
     
     #region [Property]
     public DatabaseReference Reference
@@ -56,7 +56,7 @@ public class DBManager : SingletonDontDestroy<DBManager>
                 {
                     try
                     {
-                        JsonUtility.FromJsonOverwrite(json_heightSettings, m_heightMapSettings);
+                        JsonUtility.FromJsonOverwrite(json_heightSettings, _heightMapSettings);
                     }
                     catch (Exception e)
                     {
@@ -78,8 +78,8 @@ public class DBManager : SingletonDontDestroy<DBManager>
                 {
                     try
                     {
-                        JsonUtility.FromJsonOverwrite(json_playerInfo, m_playerSettings);
-                        GameManager.Instance._player.transform.position = m_playerSettings.m_pos;
+                        JsonUtility.FromJsonOverwrite(json_playerInfo, _playerSettings);
+                        GameManager.Instance._player.transform.position = _playerSettings.m_pos;
                     }
                     catch (Exception e)
                     {

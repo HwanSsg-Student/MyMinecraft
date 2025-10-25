@@ -20,8 +20,8 @@ public class TerrainGenerator : MonoBehaviour
     Vector2 viewerPosition;
     Vector2 viewerPositionOld;
 
-    float chunkWorldSize;                   //청크 크기
-    int chunksVisibleInViewDst;             //Viewer가 볼수 있는 거리 안에 보이는 청크의 개수
+    int _chunkSize;                   //청크 크기
+    int _chunksVisibleInViewDst;             //Viewer가 볼수 있는 거리 안에 보이는 청크의 개수
 
     //청크 각각의 좌표를 저장하는 Dictionary
     public static Dictionary<Vector2, TerrainChunk> m_terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
@@ -32,6 +32,18 @@ public class TerrainGenerator : MonoBehaviour
     List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     bool _isCompleted;
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        foreach (TerrainChunk chunk in visibleTerrainChunks)
+        {
+            Gizmos.DrawWireCube(chunk._bounds.center, new Vector3(chunk._bounds.size.x, 0f, chunk._bounds.size.y));
+        }
+
+    }
+#endif
 
     void Awake()
     {
@@ -65,8 +77,8 @@ public class TerrainGenerator : MonoBehaviour
         _isCompleted = true;
         float maxViewDst = thresholdInfos[thresholdInfos.Length - 1].visibleDstThreshold;   
 
-        chunkWorldSize = m_blockSettings.WorldSize;
-        chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / chunkWorldSize); 
+        _chunkSize = m_blockSettings.ChunkSize;
+        _chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / _chunkSize); 
         UpdateVisibleChunks();
     }
 
@@ -79,12 +91,12 @@ public class TerrainGenerator : MonoBehaviour
             visibleTerrainChunks[i].UpdateTerrainChunk();
         }
 
-        int currentChunkCoordX = Mathf.RoundToInt(viewerPosition.x / chunkWorldSize); //현재 위치 x
-        int currentChunkCoordY = Mathf.RoundToInt(viewerPosition.y / chunkWorldSize); //현재 위치 y
+        int currentChunkCoordX = Mathf.RoundToInt(viewerPosition.x / _chunkSize); //현재 위치 x
+        int currentChunkCoordY = Mathf.RoundToInt(viewerPosition.y / _chunkSize); //현재 위치 y
 
-        for (int yOffset = -chunksVisibleInViewDst; yOffset <= chunksVisibleInViewDst; yOffset++)
+        for (int yOffset = -_chunksVisibleInViewDst; yOffset <= _chunksVisibleInViewDst; yOffset++)
         {
-            for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++)
+            for (int xOffset = -_chunksVisibleInViewDst; xOffset <= _chunksVisibleInViewDst; xOffset++)
             {
                 Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 

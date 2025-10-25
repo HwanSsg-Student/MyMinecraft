@@ -336,6 +336,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                         
                     int chunkPosX = Mathf.FloorToInt(targetBlockPos.x / 16f);
                     int chunkPosZ = Mathf.FloorToInt(targetBlockPos.z / 16f);
+
                     Vector2 coord = new Vector2(chunkPosX, chunkPosZ);
 
                     int chunkPosXForTheUse = Mathf.FloorToInt(targetOfUseBlockPos.x / 16f);
@@ -345,11 +346,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
                     int biy = Mathf.FloorToInt(targetBlockPos.y);
                     int biz = Mathf.FloorToInt(targetBlockPos.z) - (chunkPosZ * 16);
 
-
-
                     if (TerrainGenerator.m_terrainChunkDictionary.ContainsKey(coord))
                     {
                         TerrainChunk tc = TerrainGenerator.m_terrainChunkDictionary[coord];
+
                         if (rightClick) //Install
                         {
                             int bixForTheUse = Mathf.FloorToInt(targetOfUseBlockPos.x) - (chunkPosXForTheUse * 16);
@@ -364,6 +364,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                                 Cursor.lockState = CursorLockMode.None;
                                 return;
                             }
+
                             if (m_currentBlock == null)
                             {
                                 return;
@@ -376,7 +377,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                             }
                         }
                         else if (leftClick)  //break
-                        {   
+                        {
                             Inventory.Instance.SetItem(tc.GetBlockType(bix, biy, biz));
                             tc.UpdateTerrainChunkByPlayer(bix, biy, biz, BlockType.Air);
                         }
@@ -432,4 +433,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
 
     }
+
+#if UNITY_EDITOR
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, 5f);
+
+    }
+
+#endif
 }

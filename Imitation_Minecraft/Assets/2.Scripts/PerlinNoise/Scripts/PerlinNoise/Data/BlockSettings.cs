@@ -6,9 +6,7 @@ public class BlockSettings : UpdatableData
 {
     public const int maxHeight = 30;
 
-    public float scale;
-
-    public int width;
+    public int width = 18;
 
     public static bool isFlat;     //ÆòÁö
 
@@ -17,11 +15,11 @@ public class BlockSettings : UpdatableData
         get { return maxHeight; }
     }
     
-    public float WorldSize
+    public int ChunkSize
     {
         get
         {
-            return (width - 2) * scale;
+            return (width - 2);
         }
     }
 
@@ -37,7 +35,7 @@ public class BlockSettings : UpdatableData
         public Vector2[] m_bottom;
         public Rect m_rect;
         [Range(0, 21)]
-        public float m_startHeight;
+        public int m_startHeight;
     }
 
 }
