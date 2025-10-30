@@ -1,48 +1,46 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 public class ObjectPool<T> : MonoBehaviour where T : class
 {
-    int m_count = 0;
-    Func<T> m_func;
-    Queue<T> pool = new Queue<T>();
+    int _count = 0;
+    Func<T> _func;
+    Queue<T> _pool = new Queue<T>();
 
     public int Count
     {
-        get { return m_count; }
-        set { m_count = value; }
+        get { return _count; }
+        set { _count = value; }
     }
 
     public ObjectPool(int count, Func<T> func)
     {
-        m_count = count;
-        m_func = func;
+        _count = count;
+        _func = func;
         Allocation();
     }
 
     public T Get()
     {
-        if (pool.Count>0)
+        if (_pool.Count>0)
         {
-            return pool.Dequeue();
+            return _pool.Dequeue();
         }
         else
         {
-            return m_func();
+            return _func();
         }
     }
     public void Set(T data)
     {
-        pool.Enqueue(data);
+        _pool.Enqueue(data);
     }
     
     void Allocation()
     {
-        for (int i = 0; i < m_count; i++)
+        for (int i = 0; i < _count; i++)
         {
-            pool.Enqueue(m_func());
+            _pool.Enqueue(_func());
         }
     }
     

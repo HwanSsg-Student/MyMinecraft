@@ -1,4 +1,3 @@
-[System.Serializable]
 public enum ButtonType
 {
     None = -1,

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SingletonDontDestroy<T> : MonoBehaviour where T : SingletonDontDestroy<T>

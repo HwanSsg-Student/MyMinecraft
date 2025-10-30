@@ -122,6 +122,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &8387696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8708562648518303666, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
+  m_PrefabInstance: {fileID: 8708562647619366905}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &267271893
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,6 +469,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 3c09674c6310c984d882dd7cf80b5505, type: 2}
     - target: {fileID: 4207022884370385726, guid: e0616549afb2b824696bed20939b3a83, type: 3}
+      propertyPath: _panels.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207022884370385726, guid: e0616549afb2b824696bed20939b3a83, type: 3}
       propertyPath: m_buttons.Array.size
       value: 11
       objectReference: {fileID: 0}
@@ -774,7 +789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1205376849266619037, guid: 3925a92000111c04589f23213f0d242c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0006805104
+      value: 0.0000305659
       objectReference: {fileID: 0}
     - target: {fileID: 1205376849311375424, guid: 3925a92000111c04589f23213f0d242c, type: 3}
       propertyPath: m_Sprite
@@ -1581,7 +1596,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8708562647557158967, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 94.00067
+      value: 94.00003
       objectReference: {fileID: 0}
     - target: {fileID: 8708562647833931664, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
       propertyPath: m_TagString
@@ -1695,6 +1710,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2078120719}
+    - target: {fileID: 8708562648518303664, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
+      propertyPath: _space
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708562648518303664, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
+      propertyPath: _UIPrefab
+      value: 
+      objectReference: {fileID: 1338302521433203827, guid: d0354c2fa2059504583ae49d488c4de2, type: 3}
+    - target: {fileID: 8708562648518303664, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
+      propertyPath: _scrollRect
+      value: 
+      objectReference: {fileID: 8387696}
     - target: {fileID: 8708562648518303665, guid: 040fd29364fd15c4680ef90579b741bf, type: 3}
       propertyPath: m_TagString
       value: ScrView_Single

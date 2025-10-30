@@ -6,39 +6,39 @@ using System.Text;
 public class ScrollViewController : MonoBehaviour
 { 
     [SerializeField]
-    ScrollRect m_scrollRect;
+    ScrollRect _scrollRect;
     [SerializeField]
-    float m_space = 50f;
+    float _space;
     [SerializeField]
-    GameObject m_UIPrefab;
+    GameObject _UIPrefab;
     
-    List<RectTransform> m_UIList = new List<RectTransform>();
+    List<RectTransform> _UIList = new List<RectTransform>();
 
-    StringBuilder sb;
+    StringBuilder _sb;
 
     void Start()
     {
-        sb = new StringBuilder();
-        sb.Clear();
-        
+        _sb = new StringBuilder();
+        _sb.Clear();
     }
 
     public void AddNewUiObject(int index)
     {
-        var uiPrefab = Instantiate(m_UIPrefab, m_scrollRect.content);
+        var uiPrefab = Instantiate(_UIPrefab, _scrollRect.content);
         var newUI = uiPrefab.GetComponent<RectTransform>();
         var panelSlotController = uiPrefab.GetComponent<PanelSlotController>();
         panelSlotController.Index = index;
 
-        m_UIList.Add(newUI);
+        _UIList.Add(newUI);
 
         float y = 0f;
-        for (int i = 0; i < m_UIList.Count; i++)
+        for (int i = 0; i < _UIList.Count; i++)
         {
-            m_UIList[i].anchoredPosition = new Vector2(0f, -y);
-            y += m_UIList[i].sizeDelta.y + m_space;
+            _UIList[i].anchoredPosition = new Vector2(0f, -y);
+            y += _UIList[i].sizeDelta.y + _space;
+            
         }
-        m_scrollRect.content.sizeDelta = new Vector2(m_scrollRect.content.sizeDelta.x, y);
+        _scrollRect.content.sizeDelta = new Vector2(_scrollRect.content.sizeDelta.x, y);
 
     }
 

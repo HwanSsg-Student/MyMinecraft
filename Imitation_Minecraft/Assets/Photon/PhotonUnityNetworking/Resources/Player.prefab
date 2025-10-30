@@ -294,15 +294,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b682eb4e7394ca4088382dfceb8b5bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_blockPos: {fileID: 183450036216305379}
-  m_currentBlock: {fileID: 0}
-  m_charController: {fileID: 2144933568085912897}
-  m_moveSpeed: 3
-  sensitivity: 500
-  m_aim: {fileID: 0}
-  m_animator: {fileID: 2772696620589564727}
-  m_blocks: []
-  m_initCompleted: 0
+  _blockPos: {fileID: 183450036216305379}
+  _currentBlock: {fileID: 0}
+  _charController: {fileID: 2144933568085912897}
+  _moveSpeed: 9
+  _sensitivity: 500
+  _aim: {fileID: 0}
+  _animator: {fileID: 2772696620589564727}
+  _blocks: []
+  _initCompleted: 0
 --- !u!143 &2144933568085912897
 CharacterController:
   m_ObjectHideFlags: 0

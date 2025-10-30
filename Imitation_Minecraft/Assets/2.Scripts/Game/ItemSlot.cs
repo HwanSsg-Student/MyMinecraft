@@ -1,144 +1,173 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour
 {
-    public GameItem m_gameItem;
-    [SerializeField]
-    bool m_isEmpty;
+    public GameItem _gameItem;
+    public bool _isEmpty;
 
-    BlockType m_blockType;
-
-    GameItem m_newGameItem;
-    
-#region [Property]
-    public bool IsEmpty 
+    [SerializeField] GameItem _newGameItem;
+    [SerializeField] RectTransform _rect;
+    [SerializeField] bool _wasInside;
+    void Awake()
     {
-        get { return m_isEmpty; }
-        set { m_isEmpty = value; }
+        _rect = GetComponent<RectTransform>();
+        _wasInside = false;
     }
-    public BlockType Type
-    {
-        get { return m_blockType; }
-        set { m_blockType = value; }
-    }
-    #endregion
-
-    // 아이템이 옮겨져 왔을 때
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("GameItem"))
-        {
-            if (!m_isEmpty)
-            {
-                m_newGameItem = other.GetComponent<GameItem>();
-            }
-        }
-    }
-    private void OnTriggerStay(Collider other) 
-    {
-        if (!Inventory.Instance.GetActive() && !GameManager.Instance.m_panels[(int)PanelType.CraftingTable].activeSelf) return;
-        if(other.CompareTag("GameItem"))
-        {
-            var item = other.GetComponent<GameItem>();
-            
-            if((!item.IsDragging && !Inventory.Instance.IsHold))
-            {
-                if (m_isEmpty)
-                {
-                    item.ChangeSlot(this);
-                    SetItem(item);
-                    return;
-                }
-                else
-                {
-                    if (m_newGameItem == item && item.gameObject != m_gameItem.gameObject)
-                    {
-                        if (m_blockType == item.Type)
-                        {
-                            m_gameItem.AddItem(item.Count);
-                            Inventory.Instance.ReturnToPool(item);
-                            m_newGameItem = null;
-                        }
-                        else
-                        {
-                            item.ChangeSlot(item.CurSlot);
-                        }
-                    }
-                }
-                
-            }
-
-        }
-
-    }
-
-    // 아이템을 옮길 때
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.CompareTag("GameItem"))
-        {
-            if(m_newGameItem != null)
-            {
-                m_newGameItem = null;
-            }
-
-            var item = other.GetComponent<GameItem>();
-            if(this == Inventory.Instance.m_slotList[45])
-            {
-                if(m_gameItem == null || item.gameObject != m_gameItem.gameObject )
-                {
-                    return;
-                }
-
-                if(Inventory.Instance.GetActive())
-                {
-                    
-                    for (int i = 36; i < 40; i++)
-                    {
-                        if (Inventory.Instance.m_slotList[i].Type != BlockType.None)
-                        {
-                            Inventory.Instance.m_slotList[i].m_gameItem.UseItem();
-                        }
-                    }
-                }
-                if(GameManager.Instance.m_panels[(int)PanelType.CraftingTable].activeSelf)
-                {
-                    for (int i = 36; i < 45; i++)
-                    {
-                        if (Inventory.Instance.m_slotList[i].Type != BlockType.None)
-                        {
-                            Inventory.Instance.m_slotList[i].m_gameItem.UseItem();
-                        }
-                    }
-                }
-
-            }
-            InitSlot();
-        }
-    }
-
-
-    #region [Public Method]
     public void SetItem(GameItem item)
     {
-        m_gameItem = item;
-        m_blockType = item.Type;
-        m_isEmpty = false;
+        _gameItem = item;
+        _gameItem._isHolding = false;
+        _isEmpty = false;
+        
     }
     public void InitSlot()
     {
-        m_blockType = BlockType.None;
-        m_isEmpty = true;
-        m_gameItem = null;
+        _isEmpty = true;
+        _gameItem = null;
     }
 
-    #endregion
-    private void Update()
+
+
+    //public void OnDrop(PointerEventData e)
+    //{
+    //    if (!Inventory.Instance.GetActive() && !GameManager.Instance._panels[(int)PanelType.CraftingTable].activeSelf) return;
+
+    //    GameItem item = e.pointerDrag?.GetComponent<GameItem>();
+
+    //    if(item != null)
+    //    {
+    //        if(_isEmpty && _newGameItem == item)
+    //        {
+    //            item.ChangeSlot(this);
+    //            SetItem(item);
+    //        }
+    //        else if (!_isEmpty && _newGameItem == item && _gameItem.ItemStack.CanMerge(item.ItemStack))
+    //        {
+    //            _gameItem.ItemStack.MergeFrom(item.ItemStack);
+
+    //            if(item.ItemStack.Count == 0)
+    //            {
+    //                Inventory.Instance.ReturnToPool(item);
+    //                _newGameItem = null;
+    //            }
+    //        }
+    //    }
+    //}
+
+    void Update()
     {
-        if(m_isEmpty)
+        if (!Inventory.Instance.GetActive() && !GameManager.Instance._panels[(int)PanelType.CraftingTable].activeSelf) return;
+
+        Vector3 mousePosition = Input.mousePosition;
+        bool isInside = RectTransformUtility.RectangleContainsScreenPoint(_rect, mousePosition, Inventory.Instance._canvas.worldCamera);
+        if (!_wasInside && !isInside) return;
+        else if (!_wasInside && isInside) //마우스 커서가 들어옴
         {
-            InitSlot();
+            _wasInside = true;
+            GameItem item = Inventory.Instance.HoldingItem;
+            if (item != null)
+            {
+                _newGameItem = item;
+            }
         }
+        else if (_wasInside && !isInside) //마우스 커서가 나감
+        {
+            _wasInside = false;
+            GameItem item = Inventory.Instance.HoldingItem;
+
+            if (item != null)
+            {
+                if (_newGameItem != null && _newGameItem.gameObject == item.gameObject) _newGameItem = null;
+
+                if (this == Inventory.Instance._slotList[45]) // result slot
+                {
+                    if (_gameItem == null || item.gameObject != _gameItem.gameObject) return;
+
+                    if (Inventory.Instance.GetActive())
+                    {
+
+                        for (int i = 36; i < 40; i++)
+                        {
+                            if (Inventory.Instance._slotList[i]._gameItem.ItemStack.BlockType != BlockType.None)
+                            {
+                                Inventory.Instance._slotList[i]._gameItem.UseItem();
+                            }
+                        }
+                    }
+                    else if (GameManager.Instance._panels[(int)PanelType.CraftingTable].activeSelf)
+                    {
+                        for (int i = 36; i < 45; i++)
+                        {
+                            if (Inventory.Instance._slotList[i]._gameItem.ItemStack.BlockType != BlockType.None)
+                            {
+                                Inventory.Instance._slotList[i]._gameItem.UseItem();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (_wasInside && isInside)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameItem item = Inventory.Instance.HoldingItem;
+                if (item != null)
+                {
+                    if (_isEmpty && _newGameItem == item)
+                    {
+                        item.ChangeSlot(this);
+                        SetItem(item);
+                        Inventory.Instance._isHold = false;
+                    }
+                    else if (!_isEmpty && _newGameItem == item && _gameItem.ItemStack.CanMerge(item.ItemStack))
+                    {
+                        _gameItem.ItemStack.MergeFrom(item.ItemStack);
+                        _gameItem.SetText();
+                        if (item.ItemStack.Count == 0)
+                        {
+                            Inventory.Instance.ReturnToPool(item);
+                            _newGameItem = null;
+                            Inventory.Instance.IsHold = false;
+                        }
+                    }
+                }
+            }
+            else if(Input.GetMouseButtonDown(1))
+            {
+                GameItem item = Inventory.Instance.HoldingItem;
+                if(item != null)
+                {
+                    if (_isEmpty && _newGameItem == item)
+                    {
+                        var newitemStack = item.ItemStack.SplitItem(1);
+                        item.SetText();
+                        var newGameItem = Inventory.Instance.GetGameItemInPool();
+                        newGameItem.InitBlockItem(newitemStack);
+                        newGameItem.ChangeSlot(this);
+                        newGameItem.gameObject.SetActive(true);
+                        SetItem(newGameItem);
+                    }
+                    else if (!_isEmpty && _newGameItem == item && _gameItem.ItemStack.CanMerge(item.ItemStack))
+                    {
+                        _gameItem.ItemStack.MergeFrom(item.ItemStack.SplitItem(1));
+                        _gameItem.SetText();
+                        item.SetText();
+                        if (item.ItemStack.Count == 0)
+                        {
+                            Inventory.Instance.ReturnToPool(item);
+                            _newGameItem = null;
+                            Inventory.Instance.IsHold = false;
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
+
+
 }

@@ -174,25 +174,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3927d3bdbd38d8c40a18a1c89c5e00ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_panelInventory: {fileID: 0}
-  m_panelCraftingTable: {fileID: 0}
-  m_gameItem: {fileID: 6092219518905314355, guid: ad3ad1341189abc4baed3040e499de8f, type: 3}
-  m_itemSlot: {fileID: 3589542181002108668, guid: 1b8f4dd6299838042b04d1b5fd2bdee4, type: 3}
-  m_gridView: {fileID: 447884388}
-  m_gridViewInTab: {fileID: 1064217756017528851}
-  m_gridViewInTabHand: {fileID: 1064217756017528853}
-  m_gridViewInCraftingArea: {fileID: 1064217756017528852}
-  m_gridViewInResultArea: {fileID: 1064217756017528850}
-  m_gridViewInTable: {fileID: 3760178380737428564}
-  m_gridViewInTableHand: {fileID: 3760178380737428566}
-  m_gridViewInCraftingTable: {fileID: 1870686806}
-  m_gridViewInResultAreaInTable: {fileID: 3760178380737428565}
-  m_slotPoolObj: {fileID: 1119260977}
-  m_cursor: {fileID: 1748355888}
-  m_holdingItem: {fileID: 0}
-  m_slotList: []
-  m_gameItemList: []
-  m_isHold: 0
+  _panelInventory: {fileID: 0}
+  _panelCraftingTable: {fileID: 0}
+  _gameItem: {fileID: 6092219518905314355, guid: ad3ad1341189abc4baed3040e499de8f, type: 3}
+  _itemSlot: {fileID: 3589542181002108668, guid: 1b8f4dd6299838042b04d1b5fd2bdee4, type: 3}
+  _gridView: {fileID: 447884388}
+  _gridViewInTab: {fileID: 1064217756017528851}
+  _gridViewInTabHand: {fileID: 1064217756017528853}
+  _gridViewInCraftingArea: {fileID: 1064217756017528852}
+  _gridViewInResultArea: {fileID: 1064217756017528850}
+  _gridViewInTable: {fileID: 3760178380737428564}
+  _gridViewInTableHand: {fileID: 3760178380737428566}
+  _gridViewInCraftingTable: {fileID: 1870686806}
+  _gridViewInResultAreaInTable: {fileID: 3760178380737428565}
+  _slotPoolObj: {fileID: 1119260977}
+  _cursor: {fileID: 1748355888}
+  _holdingItem: {fileID: 0}
+  _slotList: []
+  _gameItemList: []
+  _isHold: 0
 --- !u!1 &447884388
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,8 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af761e42abd5eb45ad792b9a13959e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colliderIndex: 0
-  thresholdInfos:
+  _thresholdInfos:
   - visibleDstThreshold: 16
   - visibleDstThreshold: 64
   heightMapSettings: {fileID: 11400000, guid: 3c09674c6310c984d882dd7cf80b5505, type: 2}
@@ -890,7 +889,7 @@ GameObject:
   - component: {fileID: 2027107613}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1471,11 +1470,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d03a46212e536439330933b9d23d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_blockSettings: {fileID: 11400000, guid: 4a32be189129b3640ae7135e5b56f003, type: 2}
-  m_image: {fileID: 0}
-  m_countText: {fileID: 0}
-  m_itemSlot: {fileID: 0}
-  m_rectTransform: {fileID: 0}
+  _blockSettings: {fileID: 0}
+  _image: {fileID: 0}
+  _countText: {fileID: 0}
+  _itemSlot: {fileID: 0}
+  _rectTransform: {fileID: 0}
+  _isHolding: 0
 --- !u!1 &3589542179508824259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,8 +1721,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba305d6d6b4b5d409ac0c090152151b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_gameItem: {fileID: 8353702539750754826, guid: ad3ad1341189abc4baed3040e499de8f, type: 3}
-  m_isEmpty: 0
+  _gameItem: {fileID: 8353702539750754826, guid: ad3ad1341189abc4baed3040e499de8f, type: 3}
+  _isEmpty: 0
+  _newGameItem: {fileID: 0}
+  _image: {fileID: 0}
 --- !u!114 &4655279345603845837
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -106,7 +106,7 @@ MonoBehaviour:
       y: 0.875
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1
   - m_blockType: 5
     m_top:
     - {x: 0.8, y: 0.2}
@@ -129,7 +129,7 @@ MonoBehaviour:
       y: 0.875
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1
   - m_blockType: 7
     m_top:
     - {x: 0.6, y: 0.6}
@@ -152,7 +152,7 @@ MonoBehaviour:
       y: 0.9375
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1
   - m_blockType: 9
     m_top:
     - {x: 0.8, y: 0.6}
@@ -175,7 +175,7 @@ MonoBehaviour:
       y: 0.5625
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1
   - m_blockType: 10
     m_top:
     - {x: 0.8, y: 0.8}
@@ -198,7 +198,7 @@ MonoBehaviour:
       y: 0.75
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1
   - m_blockType: 8
     m_top:
     - {x: 0.4, y: 0.2}
@@ -221,4 +221,4 @@ MonoBehaviour:
       y: 0.6875
       width: 0.0625
       height: 0.0625
-    m_startHeight: 21
+    m_startHeight: -1

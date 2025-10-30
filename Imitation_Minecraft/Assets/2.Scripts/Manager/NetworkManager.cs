@@ -1,7 +1,6 @@
-
-using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
@@ -28,9 +27,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public void CheckRoom()
     {
-        if (GameManager.Instance.m_scrollViewCtrl[1].gameObject.transform.GetChild(0).GetChild(0).childCount != 1)
+        if (GameManager.Instance._scrollViewCtrl[1].gameObject.transform.GetChild(0).GetChild(0).childCount != 1)
         {
-            GameManager.Instance.m_scrollViewCtrl[1].AddNewUiObject(0);
+            GameManager.Instance._scrollViewCtrl[1].AddNewUiObject(0);
         }
     }
 
@@ -45,7 +44,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
     public override void OnJoinedRoom()
     {
-        var player = PhotonNetwork.Instantiate("Player", new Vector3(0f, 5f, 0f), Quaternion.identity);
+        var player = PhotonNetwork.Instantiate("Player", new Vector3(0f, 15f, 0f), Quaternion.identity);
         
         GameManager.Instance.Player = player.GetComponent<PlayerController>();
         LoadSceneManager.Instance.LoadScene(SceneType.Game);

@@ -93,17 +93,4 @@ public class DBManager : SingletonDontDestroy<DBManager>
 
 
     #endregion
-
-    //#region [EventHandler]
-    //void HandleChildAddedEvent(object sender, ChildChangedEventArgs args)
-    //{
-    //    if (args.DatabaseError != null)
-    //    {
-    //        Debug.LogError(args.DatabaseError.Message);
-    //        return;
-    //    }
-    //}
-    //#endregion
-
-
 }

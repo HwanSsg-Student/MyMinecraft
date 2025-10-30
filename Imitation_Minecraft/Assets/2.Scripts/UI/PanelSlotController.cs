@@ -6,29 +6,27 @@ using UnityEngine.UI;
 public class PanelSlotController : MonoBehaviour
 {
     [SerializeField]
-    Text m_title;
+    Text _title;
     [SerializeField]
-    Text m_log;
-
+    Text _log;
     [SerializeField]
-    int m_index;
+    int _index;
     public int Index
     {
-        get { return m_index; }
-        set { m_index = value; }
+        get { return _index; }
+        set { _index = value; }
     }
     public string Title
     {
-        get { return m_title.text; }
+        get { return _title.text; }
         private set { }
     }
     void Start()
     {
-        m_title = transform.GetChild(1).GetComponent<Text>();
-        m_log = transform.GetChild(2).GetComponent<Text>();
+        _title = transform.GetChild(1).GetComponent<Text>();
+        _log = transform.GetChild(2).GetComponent<Text>();
         SetTitle(false);
     }
-
     void SetTitle(bool isMulti)
     {
         if(!isMulti)
@@ -40,7 +38,7 @@ public class PanelSlotController : MonoBehaviour
                 {
                     var snapShot = task.Result;
                     var dic = (Dictionary<string, object>)snapShot.Value;
-                    m_title.text = dic.ElementAt(m_index).Key;
+                    _title.text = dic.ElementAt(_index).Key;
                     SetLog();
                 }
             });
@@ -48,12 +46,12 @@ public class PanelSlotController : MonoBehaviour
     }
     void SetLog()
     {
-        DBManager.Instance.Reference.Child("Minecraft").Child(m_title.text).Child("date").GetValueAsync().ContinueWithOnMainThread(task =>
+        DBManager.Instance.Reference.Child("Minecraft").Child(_title.text).Child("date").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted) return;
             if (task.IsCompleted)
             {
-                m_log.text = task.Result.Value.ToString();
+                _log.text = task.Result.Value.ToString();
             }
         });
 

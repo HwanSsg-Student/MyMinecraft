@@ -1,4 +1,3 @@
-[System.Serializable]
 public enum PanelType
 {
     None = -1,

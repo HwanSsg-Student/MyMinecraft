@@ -1,6 +1,5 @@
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using System.Threading.Tasks;
 public enum SceneType
 {
     None = -1,
@@ -11,7 +10,7 @@ public enum SceneType
 
 public class LoadSceneManager : SingletonDontDestroy<LoadSceneManager>
 {
-    public SceneType m_sceneType = SceneType.None;
+    public SceneType _sceneType = SceneType.None;
     public void LoadScene(SceneType sceneNum)
     {
         var asyncOperation = SceneManager.LoadSceneAsync((int)sceneNum);
@@ -19,7 +18,7 @@ public class LoadSceneManager : SingletonDontDestroy<LoadSceneManager>
         asyncOperation.completed += (temp) => 
         { 
             GameManager.Instance.InitObject(sceneNum);
-            m_sceneType = sceneNum;
+            _sceneType = sceneNum;
         };
                 
     }
@@ -33,7 +32,6 @@ public class LoadSceneManager : SingletonDontDestroy<LoadSceneManager>
         }
         NetworkManager.Instance.Connect();   
     }
-
 
     public void OnQuitGame()
     {

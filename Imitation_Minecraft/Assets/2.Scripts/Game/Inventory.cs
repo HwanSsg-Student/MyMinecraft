@@ -1,136 +1,137 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public class Inventory : SingletonMonoBehaviour<Inventory>
 {
+    public Canvas _canvas;
     [SerializeField]
-    GameObject m_panelInventory;
+    GameObject _panelInventory;
     [SerializeField]
-    GameObject m_panelCraftingTable;
+    GameObject _panelCraftingTable;
     [SerializeField]
-    GameObject m_gameItem;
+    GameObject _gameItem;
     [SerializeField]
-    GameObject m_itemSlot;
+    GameObject _itemSlot;
     [SerializeField]
-    GameObject m_gridView;
+    GameObject _gridView;
     [SerializeField]
-    GameObject m_gridViewInTab;
+    GameObject _gridViewInTab;
     [SerializeField]
-    GameObject m_gridViewInTabHand;
+    GameObject _gridViewInTabHand;
     [SerializeField]
-    GameObject m_gridViewInCraftingArea;
+    GameObject _gridViewInCraftingArea;
     [SerializeField]
-    GameObject m_gridViewInResultArea;
+    GameObject _gridViewInResultArea;
     [SerializeField]
-    GameObject m_gridViewInTable;
+    GameObject _gridViewInTable;
     [SerializeField]
-    GameObject m_gridViewInTableHand;
+    GameObject _gridViewInTableHand;
     [SerializeField]
-    GameObject m_gridViewInCraftingTable;
+    GameObject _gridViewInCraftingTable;
     [SerializeField]
-    GameObject m_gridViewInResultAreaInTable;
+    GameObject _gridViewInResultAreaInTable;
     [SerializeField]
-    GameObject m_slotPoolObj;
+    GameObject _slotPoolObj;
     [SerializeField]
-    GameObject m_cursor;
+    GameObject _cursor;
     [SerializeField]
-    GameItem m_holdingItem;
+    GameItem _holdingItem;
 
-    public List<ItemSlot> m_slotList = new List<ItemSlot>();
-    public List<GameItem> m_gameItemList = new List<GameItem>();
+    public List<ItemSlot> _slotList = new List<ItemSlot>();
+    public List<GameItem> _gameItemList = new List<GameItem>();
 
-    Dictionary<string, BlockType> m_recipeInInv = new Dictionary<string, BlockType>();
-    Dictionary<string, BlockType> m_recipeInTable = new Dictionary<string, BlockType>();
-    ObjectPool<GameItem> m_gameItemPool;
-    ObjectPool<ItemSlot> m_itemSlotPool;
+    Dictionary<string, BlockType> _recipeInInv = new Dictionary<string, BlockType>();
+    Dictionary<string, BlockType> _recipeInTable = new Dictionary<string, BlockType>();
+    ObjectPool<GameItem> _gameItemPool;
+    ObjectPool<ItemSlot> _itemSlotPool;
 
-    int m_curIndex;
+    int _curIndex;
 
-    bool m_isCompleted;
-    [SerializeField]
-    bool m_isHold;
+    bool _isCompleted;
+    
+    public bool _isHold;
 
     #region [Property]
     public int CurIndex
     {
-        get { return m_curIndex; }
-        set { m_curIndex = value; }
+        get { return _curIndex; }
+        set { _curIndex = value; }
     }
     public bool IsHold
     {
-        get { return m_isHold; }
-        set { m_isHold = value; }
+        get { return _isHold; }
+        set { _isHold = value; }
     }
     public GameItem HoldingItem
     {
-        get { return m_holdingItem; }
-        set { m_holdingItem = value; }
+        get { return _holdingItem; }
+        set { _holdingItem = value; }
     }
-
     #endregion
 
     void InitRecipe()
     {
-        m_recipeInInv.Add("-1-1-1-1", BlockType.None);
-        m_recipeInTable.Add("-1-1-1-1", BlockType.None);
+        _recipeInInv.Add("-1-1-1-1", BlockType.None);
+        _recipeInTable.Add("-1-1-1-1", BlockType.None);
 
-        m_recipeInInv.Add("4-1-1-1", BlockType.Plank);
-        m_recipeInInv.Add("-14-1-1", BlockType.Plank);
-        m_recipeInInv.Add("-1-14-1", BlockType.Plank);
-        m_recipeInInv.Add("-1-1-14", BlockType.Plank);
+        _recipeInInv.Add("4-1-1-1", BlockType.Plank);
+        _recipeInInv.Add("-14-1-1", BlockType.Plank);
+        _recipeInInv.Add("-1-14-1", BlockType.Plank);
+        _recipeInInv.Add("-1-1-14", BlockType.Plank);
 
-        m_recipeInTable.Add("4-1-1-1-1-1-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-14-1-1-1-1-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-14-1-1-1-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-14-1-1-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-1-14-1-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-1-1-14-1-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-1-1-1-14-1-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-1-1-1-1-14-1", BlockType.Plank);
-        m_recipeInTable.Add("-1-1-1-1-1-1-1-14", BlockType.Plank);
+        _recipeInTable.Add("4-1-1-1-1-1-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-14-1-1-1-1-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-14-1-1-1-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-14-1-1-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-1-14-1-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-1-1-14-1-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-1-1-1-14-1-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-1-1-1-1-14-1", BlockType.Plank);
+        _recipeInTable.Add("-1-1-1-1-1-1-1-14", BlockType.Plank);
 
-        m_recipeInInv.Add("7-17-1", BlockType.Stick);
-        m_recipeInInv.Add("-17-17", BlockType.Stick);
+        _recipeInInv.Add("7-17-1", BlockType.Stick);
+        _recipeInInv.Add("-17-17", BlockType.Stick);
 
-        m_recipeInTable.Add("7-1-17-1-1-1-1-1", BlockType.Stick);
-        m_recipeInTable.Add("-17-1-17-1-1-1-1", BlockType.Stick);
-        m_recipeInTable.Add("-1-17-1-17-1-1-1", BlockType.Stick);
-        m_recipeInTable.Add("-1-1-17-1-17-1-1", BlockType.Stick);
-        m_recipeInTable.Add("-1-1-1-17-1-17-1", BlockType.Stick);
-        m_recipeInTable.Add("-1-1-1-1-17-1-17", BlockType.Stick);
+        _recipeInTable.Add("7-1-17-1-1-1-1-1", BlockType.Stick);
+        _recipeInTable.Add("-17-1-17-1-1-1-1", BlockType.Stick);
+        _recipeInTable.Add("-1-17-1-17-1-1-1", BlockType.Stick);
+        _recipeInTable.Add("-1-1-17-1-17-1-1", BlockType.Stick);
+        _recipeInTable.Add("-1-1-1-17-1-17-1", BlockType.Stick);
+        _recipeInTable.Add("-1-1-1-1-17-1-17", BlockType.Stick);
 
-        m_recipeInInv.Add("7777", BlockType.CraftingTable);
+        _recipeInInv.Add("7777", BlockType.CraftingTable);
 
-        m_recipeInTable.Add("77-177-1-1-1-1", BlockType.CraftingTable);
-        m_recipeInTable.Add("-177-177-1-1-1", BlockType.CraftingTable);
-        m_recipeInTable.Add("-1-1-177-177-1", BlockType.CraftingTable);
-        m_recipeInTable.Add("-1-1-1-177-177", BlockType.CraftingTable);
+        _recipeInTable.Add("77-177-1-1-1-1", BlockType.CraftingTable);
+        _recipeInTable.Add("-177-177-1-1-1", BlockType.CraftingTable);
+        _recipeInTable.Add("-1-1-177-177-1", BlockType.CraftingTable);
+        _recipeInTable.Add("-1-1-1-177-177", BlockType.CraftingTable);
 
-        m_recipeInTable.Add("777-110-1-110-1", BlockType.Pickax);
+        _recipeInTable.Add("777-110-1-110-1", BlockType.Pickax);
     }
     void CreateGameItem()
     {
-        m_gameItemPool = new ObjectPool<GameItem>(1, () =>
+        _gameItemPool = new ObjectPool<GameItem>(1, () =>
         {
-            var obj = Instantiate(m_gameItem);
+            var obj = Instantiate(_gameItem);
             var item = obj.GetComponent<GameItem>();
             item.gameObject.SetActive(false);
-            m_gameItemList.Add(item);
+            _gameItemList.Add(item);
             return item;
         });
     }
     void CreateSlot()
     {
-        m_itemSlotPool = new ObjectPool<ItemSlot>(46, () =>
+        _itemSlotPool = new ObjectPool<ItemSlot>(46, () =>
         {
-            var obj = Instantiate(m_itemSlot);
-            obj.transform.parent = m_slotPoolObj.transform;
+            var obj = Instantiate(_itemSlot);
+            obj.GetComponent<RectTransform>().SetParent(_slotPoolObj.transform);
             var itemSlot = obj.GetComponent<ItemSlot>();
             itemSlot.InitSlot();
-            m_slotList.Add(itemSlot);
-            //itemSlot.gameObject.SetActive(false);
+            _slotList.Add(itemSlot);
+            
             return itemSlot;
         });
-        m_panelInventory.SetActive(false);
+        _panelInventory.SetActive(false);
     }
     public void SetSlot(PanelType panelType, bool isVisible)
     {
@@ -138,52 +139,52 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
         {
             for (int i = 0; i < 9; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridView.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridView.transform);
             }
             for (int i = 9; i < 46; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_slotPoolObj.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_slotPoolObj.transform);
             }
         }
         if (panelType == PanelType.Inventory && isVisible)
         {
             for (int i = 0; i < 9; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInTabHand.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInTabHand.transform);
             }
             for (int i = 9; i < 36; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInTab.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInTab.transform);
             }
             for (int i = 36; i < 40; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInCraftingArea.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInCraftingArea.transform);
             }
-            m_slotList[45].transform.parent = m_gridViewInResultArea.transform;
+            _slotList[45].GetComponent<RectTransform>().SetParent(_gridViewInResultArea.transform);
         }
         if (panelType == PanelType.CraftingTable && isVisible)
         {
             for (int i = 0; i < 9; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInTableHand.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInTableHand.transform);
             }
             for (int i = 9; i < 36; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInTable.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInTable.transform);
             }
             for (int i = 36; i < 45; i++)
             {
-                var slot = m_slotList[i];
-                slot.transform.parent = m_gridViewInCraftingTable.transform;
+                var slot = _slotList[i];
+                slot.GetComponent<RectTransform>().SetParent(_gridViewInCraftingTable.transform);
             }
-            m_slotList[45].transform.parent = m_gridViewInResultAreaInTable.transform;
+            _slotList[45].GetComponent<RectTransform>().SetParent(_gridViewInResultAreaInTable.transform);
         }
 
 
@@ -194,35 +195,46 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 
         for (int i = 36; i < 40; i++)
         {
-            str += ((int)m_slotList[i].Type).ToString();
+            if (_slotList[i]._isEmpty)
+            {
+                str += "-1";
+            }
+            else
+            {
+                str += ((int)_slotList[i]._gameItem.ItemStack.BlockType).ToString();
+            }
         }
-        if (m_recipeInInv.ContainsKey(str) && m_recipeInInv[str] != BlockType.None && m_slotList[45].IsEmpty)
+        if (_recipeInInv.ContainsKey(str) && _recipeInInv[str] != BlockType.None && _slotList[45]._isEmpty)
         {
-            var obj = m_gameItemPool.Get();
+            var obj = _gameItemPool.Get();
             obj.gameObject.SetActive(true);
-            obj.transform.parent = m_slotList[45].transform;
+            obj.transform.parent = _slotList[45].transform;
             var rectTransform = obj.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(24f, -24f);
 
-            ItemData itemData = new ItemData() { blockType = m_recipeInInv[str], count = 1, index = m_gameItemList.Count };
+            ItemStack itemStack = null;
 
-            if (m_recipeInInv[str] == BlockType.Plank || m_recipeInInv[str] == BlockType.Stick)
+            if (_recipeInInv[str] == BlockType.Plank || _recipeInInv[str] == BlockType.Stick)
             {
-                itemData.count = 4;
+                itemStack = new ItemStack(_recipeInInv[str], 4, 64);
+            }
+            else
+            {
+                itemStack = new ItemStack(_recipeInInv[str], 1, 64);
             }
 
             var item = obj.GetComponent<GameItem>();
-            m_gameItemList.Add(item);
-            item.InitBlockItem(itemData, m_slotList[45]);
-            m_slotList[45].SetItem(item);
+            _gameItemList.Add(item);
+            item.InitBlockItem(itemStack, _slotList[45]);
+            _slotList[45].SetItem(item);
 
         }
-        if (!m_slotList[45].IsEmpty)
+        if (!_slotList[45]._isEmpty)
         {
-            if (!m_recipeInInv.ContainsKey(str) || m_recipeInInv[str] != m_slotList[45].m_gameItem.Type)
+            if (!_recipeInInv.ContainsKey(str) || _recipeInInv[str] != _slotList[45]._gameItem.ItemStack.BlockType)
             {
-                ReturnToPool(m_slotList[45].m_gameItem);
-                m_slotList[45].InitSlot();
+                ReturnToPool(_slotList[45]._gameItem);
+                _slotList[45].InitSlot();
             }
         }
 
@@ -233,67 +245,70 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 
         for (int i = 36; i < 45; i++)
         {
-            str += ((int)m_slotList[i].Type).ToString();
+            str += ((int)_slotList[i]._gameItem.ItemStack.BlockType).ToString();
         }
 
-        if (m_recipeInTable.ContainsKey(str) && m_recipeInTable[str] != BlockType.None && m_slotList[45].IsEmpty)
+        if (_recipeInTable.ContainsKey(str) && _recipeInTable[str] != BlockType.None && _slotList[45]._isEmpty)
         {
-            var obj = m_gameItemPool.Get();
+            var obj = _gameItemPool.Get();
             obj.gameObject.SetActive(true);
-            obj.transform.parent = m_slotList[45].transform;
+            obj.transform.parent = _slotList[45].transform;
             var rectTransform = obj.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(24f, -24f);
 
-            ItemData itemData = new ItemData() { blockType = m_recipeInTable[str], count = 1, index = m_gameItemList.Count };
+            ItemStack itemStack = null;
 
-            if (m_recipeInTable[str] == BlockType.Plank || m_recipeInTable[str] == BlockType.Stick)
+            if (_recipeInInv[str] == BlockType.Plank || _recipeInInv[str] == BlockType.Stick)
             {
-                itemData.count = 4;
+                itemStack = new ItemStack(_recipeInInv[str], 4, 64);
+            }
+            else
+            {
+                itemStack = new ItemStack(_recipeInInv[str], 1, 64);
             }
 
             var item = obj.GetComponent<GameItem>();
-            m_gameItemList.Add(item);
-            item.InitBlockItem(itemData, m_slotList[45]);
-            m_slotList[45].SetItem(item);
+            _gameItemList.Add(item);
+            item.InitBlockItem(itemStack, _slotList[45]);
+            _slotList[45].SetItem(item);
 
         }
-        if (!m_slotList[45].IsEmpty)
+        if (!_slotList[45]._isEmpty)
         {
-            if (!m_recipeInTable.ContainsKey(str) || m_recipeInTable[str] != m_slotList[45].m_gameItem.Type)
+            if (!_recipeInTable.ContainsKey(str) || _recipeInTable[str] != _slotList[45]._gameItem.ItemStack.BlockType)
             {
-                ReturnToPool(m_slotList[45].m_gameItem);
+                ReturnToPool(_slotList[45]._gameItem);
 
-                m_slotList[45].InitSlot();
+                _slotList[45].InitSlot();
             }
         }
 
     }
-    public void BringItemHalf(GameItem gameitem, ItemSlot slot)
+    public void BringItemHalf(GameItem gameitem)
     {
-        ItemData data = new ItemData() { count = gameitem.Count / 2, blockType = gameitem.Type, index = m_gameItemList.Count };
-        if (data.count == 0) return;
+        ItemStack itemStack = gameitem.ItemStack.SplitItem(Mathf.CeilToInt(gameitem.ItemStack.Count / 2f));
 
-        m_holdingItem = m_gameItemPool.Get();
-        m_holdingItem.gameObject.transform.parent = this.transform;
-        m_holdingItem._rectTransform.transform.position = Input.mousePosition;
-        m_holdingItem.gameObject.SetActive(true);
+        var item = _gameItemPool.Get();
+        item.gameObject.GetComponent<RectTransform>().SetParent(this.transform);
+        item.gameObject.SetActive(true);
+        item.InitBlockItem(itemStack);
+        item._isHolding = true;
 
+        _isHold = true;
+        _holdingItem = item;
 
-        var item = m_holdingItem.GetComponent<GameItem>();
-        m_gameItemList.Add(item);
-        item.InitBlockItem(data, slot);
-        m_isHold = true;
+        _gameItemList.Add(item);
     }
     public void SelectCursor(int index)
     {
-        m_cursor.transform.position = m_slotList[index].transform.position;
-        m_curIndex = index;
+        _cursor.transform.position = _slotList[index].transform.position;
+        _curIndex = index;
     }
     public void SetActive()
     {
-        m_panelInventory.gameObject.SetActive(!GetActive());
+        _panelInventory.gameObject.SetActive(!GetActive());
 
-        if (m_panelInventory.gameObject.activeSelf)
+        if (_panelInventory.gameObject.activeSelf)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -308,34 +323,43 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
     }
     public bool GetActive()
     {
-        return m_panelInventory.gameObject.activeSelf;
+        return _panelInventory.gameObject.activeSelf;
     }
     public void SetItem(BlockType blockType)
     {
-        ItemData itemData = new ItemData() { blockType = blockType, count = 1, index = m_gameItemList.Count };
-        for (int i = 0; i < m_slotList.Count; i++)
+        ItemStack itemStack = new ItemStack(blockType, 1, 64);
+        for (int i = 0; i < _slotList.Count; i++)
         {
-            if (m_slotList[i].IsEmpty) //슬롯이 비어있을 때
+            if (_slotList[i]._isEmpty) //슬롯이 비어있을 때
             {
-                var obj = m_gameItemPool.Get();
+                var obj = _gameItemPool.Get();
                 obj.gameObject.SetActive(true);
-                obj.transform.parent = m_slotList[i].transform;
+                obj._rectTransform.SetParent(_slotList[i].transform);
+                //obj.transform.parent = _slotList[i].transform;
                 var rectTransform = obj.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = new Vector2(24f, -24f);
                 var item = obj.GetComponent<GameItem>();
-                m_gameItemList.Add(item);
-                item.InitBlockItem(itemData, m_slotList[i]);
-                m_slotList[i].SetItem(item);
+                _gameItemList.Add(item);
+                item.InitBlockItem(itemStack, _slotList[i]);
+                _slotList[i].SetItem(item);
 
                 break;
             }
-            else if (!m_slotList[i].IsEmpty) //슬롯이 비어있지 않을 때
+            else if (!_slotList[i]._isEmpty) //슬롯이 비어있지 않을 때
             {
-                if (m_slotList[i].Type == blockType)
+                if (_slotList[i]._gameItem.ItemStack.BlockType == blockType)
                 {
-                    var isAdd = m_slotList[i].m_gameItem.AddItem();
-                    if (isAdd) break;
-                    else if (!isAdd) continue;
+                    var isAdd = _slotList[i]._gameItem.AddItem(1);
+                    if (isAdd)
+                    {
+                        Debug.Log("isAdd");
+                        break;
+                    }
+                    else if (!isAdd)
+                    {
+                        Debug.Log("not isAdd");
+                        continue;
+                    }
                 }
 
             }
@@ -343,68 +367,59 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
     }
     public BlockType UseItem()
     {
-        BlockType type = m_slotList[m_curIndex].m_gameItem.Type;
+        BlockType type = _slotList[_curIndex]._gameItem.ItemStack.BlockType;
         if ((int)type < 9)
         {
-            m_slotList[m_curIndex].m_gameItem.UseItem();
+            _slotList[_curIndex]._gameItem.UseItem();
         }
         return type;
     }
     public void ReturnToPool(GameItem item)
     {
         item.gameObject.SetActive(false);
-        m_gameItemPool.Set(item);
+        _gameItemPool.Set(item);
     }
-
     public void InitInventory()
     {
-        
-        m_panelInventory = GameManager.Instance.m_panels[(int)PanelType.Inventory].gameObject;
-        m_panelCraftingTable = GameManager.Instance.m_panels[(int)PanelType.CraftingTable].gameObject;
+        _panelInventory = GameManager.Instance._panels[(int)PanelType.Inventory].gameObject;
+        _panelCraftingTable = GameManager.Instance._panels[(int)PanelType.CraftingTable].gameObject;
+        _canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
         InitRecipe();
         CreateSlot();
         CreateGameItem();
         SetSlot(PanelType.None, true);
-        m_curIndex = 0;
-        m_isHold = false;
-        m_cursor.transform.position = new Vector3(400f, 30f, 0f);
-        m_isCompleted = true;
+        _curIndex = 0;
+        _isHold = false;
+        _cursor.transform.position = new Vector3(400f, 30f, 0f);
+        _isCompleted = true;
     }
 
-    void Start()
+    public GameItem GetGameItemInPool()
     {
-        //m_isCompleted = false;
-
+        return _gameItemPool.Get();
     }
-
     void Update()
     {
-        if(m_isCompleted)
+        if(_isCompleted)
         {
             if (GetActive())
             {
                 Craft();
-                if (m_isHold)
-                {
-                    m_holdingItem._rectTransform.position = Input.mousePosition;
-                }
-            }
-            if (GameManager.Instance.m_panels[(int)PanelType.CraftingTable].activeSelf)
-            {
-                CraftInTable();
-                if (m_isHold)
-                {
-                    m_holdingItem._rectTransform.position = Input.mousePosition;
-                }
             }
 
-            if (!GetActive() && !GameManager.Instance.m_panels[(int)PanelType.CraftingTable].activeSelf)
+            if (GameManager.Instance._panels[(int)PanelType.CraftingTable].activeSelf)
             {
-                m_isHold = false;
+                CraftInTable();
+
             }
-            if (!m_isHold)
+
+            if (!GetActive() && !GameManager.Instance._panels[(int)PanelType.CraftingTable].activeSelf)
             {
-                m_holdingItem = null;
+                _isHold = false;
+            }
+            if (!_isHold)
+            {
+                _holdingItem = null;
             }
         }
        
