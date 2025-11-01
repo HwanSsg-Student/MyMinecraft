@@ -73,7 +73,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
             _buttons[(int)ButtonType.BtnSaveAndQuitToTitle] = GameObject.FindGameObjectWithTag("Btn_SaveAndQuitToTitle").GetComponent<Button>();
             _buttons[(int)ButtonType.BtnBackToGame].onClick.AddListener(OnBackToGame);
             _buttons[(int)ButtonType.BtnSaveAndQuitToTitle].onClick.AddListener(OnSaveAndQuitToTitle);
-            _panels[(int)PanelType.CraftingTable].gameObject.SetActive(false);
+            _panels[(int)PanelType.CraftingTable].SetActive(false);
 
             var players = GameObject.FindGameObjectsWithTag("Player");
             NetworkManager.Instance.InitPlayers(players);
@@ -88,6 +88,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
             _panels[(int)PanelType.SinglePlay] = GameObject.FindGameObjectWithTag("Panel_SinglePlay");
             _panels[(int)PanelType.MultiPlay] = GameObject.FindGameObjectWithTag("Panel_MultiPlay");
             _panels[(int)PanelType.CreateWorld] = GameObject.FindGameObjectWithTag("Panel_CreateWorld");
+            _panels[(int)PanelType.Loading] = GameObject.FindGameObjectWithTag("Panel_Loading");
 
             _scrollViewCtrl[0] = GameObject.FindGameObjectWithTag("ScrView_Single").GetComponent<ScrollViewController>();
             _scrollViewCtrl[1] = GameObject.FindGameObjectWithTag("ScrView_Multi").GetComponent<ScrollViewController>();
@@ -116,6 +117,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
             _panels[(int)PanelType.SinglePlay].SetActive(false);
             _panels[(int)PanelType.MultiPlay].SetActive(false);
             _panels[(int)PanelType.CreateWorld].SetActive(false);
+            _panels[(int)PanelType.Loading].SetActive(false);
             _prevPanel = PanelType.None;
 
             _isSuccess = false;
@@ -149,8 +151,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
     {
         OnSaveInfo();
     }
-
-    public void OnSaveInfo()
+    void OnSaveInfo()
     {
         DBManager.Instance.Reference.Child("Minecraft").Child(_title).GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -207,8 +208,8 @@ public class GameManager : SingletonDontDestroy<GameManager>
     }
     public void OnSinglePlayer()
     {
-        _panels[(int)PanelType.SinglePlay].gameObject.SetActive(true);
-        _panels[(int)PanelType.MainTitle].gameObject.SetActive(false);
+        _panels[(int)PanelType.SinglePlay].SetActive(true);
+        _panels[(int)PanelType.MainTitle].SetActive(false);
         _prevPanel = PanelType.MainTitle;
         if (!_isSuccess)
         {
@@ -240,8 +241,8 @@ public class GameManager : SingletonDontDestroy<GameManager>
     }
     public void OnMultiPlayer()
     {
-        _panels[(int)PanelType.MultiPlay].gameObject.SetActive(true);
-        _panels[(int)PanelType.MainTitle].gameObject.SetActive(false);
+        _panels[(int)PanelType.MultiPlay].SetActive(true);
+        _panels[(int)PanelType.MainTitle].SetActive(false);
         _prevPanel = PanelType.MainTitle;
         if (!_isSuccess)
         {
@@ -253,8 +254,8 @@ public class GameManager : SingletonDontDestroy<GameManager>
 
     public void OnCreateWorld()
     {
-        _panels[(int)PanelType.CreateWorld].gameObject.SetActive(true);
-        _panels[(int)PanelType.SinglePlay].gameObject.SetActive(false);
+        _panels[(int)PanelType.CreateWorld].SetActive(true);
+        _panels[(int)PanelType.SinglePlay].SetActive(false);
         _prevPanel = PanelType.SinglePlay;
     }
     public void OnCancle()
@@ -268,7 +269,7 @@ public class GameManager : SingletonDontDestroy<GameManager>
                 break;
             }
         }
-        _panels[(int)_prevPanel].gameObject.SetActive(true);
+        _panels[(int)_prevPanel].SetActive(true);
         _prevPanel = PanelType.MainTitle;
         _isSuccess = false;
 
@@ -289,6 +290,12 @@ public class GameManager : SingletonDontDestroy<GameManager>
             BlockSettings.isFlat = true;
         }
         _sb.Clear();
+    }
+    public void OnLoading()
+    {
+        _panels[(int)PanelType.Loading].SetActive(true);
+        _panels[(int)PanelType.SinglePlay].SetActive(false);
+        _prevPanel = PanelType.SinglePlay;
     }
     #endregion
 

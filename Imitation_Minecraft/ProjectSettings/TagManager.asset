@@ -30,6 +30,7 @@ TagManager:
   - Btn_SinglePlay
   - Btn_MultiPlay
   - Canvas
+  - Panel_Loading
   layers:
   - Default
   - TransparentFX

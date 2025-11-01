@@ -8,5 +8,6 @@ public enum PanelType
     SinglePlay,
     Inventory,
     CraftingTable,
+    Loading,
     Max
 }

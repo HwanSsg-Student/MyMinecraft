@@ -5,24 +5,20 @@ using UnityEngine.UI;
 public class PanoramaController : MonoBehaviour
 {
     [SerializeField]
-    float m_speed;
+    float _speed;
 
-    RectTransform m_rectTransform;
-
+    Image _image;
+    Material _material;
     
     void Start()
     {
-        m_rectTransform = GetComponent<RectTransform>();
+        _image = GetComponent<Image>();
+        _material = _image.material;
     }
 
     void Update()
     {
-        m_rectTransform.position += Vector3.left * m_speed * Time.deltaTime;
-        
-        if (m_rectTransform.position.x <= -1280f)
-        {
-            m_rectTransform.position = new Vector3(3840, 360);
-        }
+        _material.mainTextureOffset += Vector2.right * _speed * Time.deltaTime;
     }
     
     
